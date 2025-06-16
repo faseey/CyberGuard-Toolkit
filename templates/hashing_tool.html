@@ -1,0 +1,124 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="card">
+    <h2>File Hashing Tool</h2>
+    <p>Upload a file to calculate its SHA256 hash. You can also compare hashes of two files to check for integrity.</p>
+
+    <div class="form-group">
+        <label for="file1">Select File 1:</label>
+        <input type="file" id="file1" class="input-field" required>
+        <button class="button" onclick="calculateHash('file1', 'hashResult1')">Calculate Hash</button>
+        <p id="hashResult1" class="result-display"></p>
+    </div>
+
+    <div class="form-group">
+        <label for="file2">Select File 2:</label>
+        <input type="file" id="file2" class="input-field">
+        <button class="button" onclick="calculateHash('file2', 'hashResult2')">Calculate Hash</button>
+        <p id="hashResult2" class="result-display"></p>
+    </div>
+
+    <div class="button-group" style="margin-top: 20px;">
+        <button class="button" onclick="compareHashes()">Compare Hashes</button>
+    </div>
+
+    <p id="comparisonResult" class="status-message" style="font-size: 1.1rem;"></p>
+    <p id="statusMessage" class="status-message"></p>
+</div>
+
+<script>
+    async function calculateHash(fileInputId, resultElementId) {
+        const fileInput = document.getElementById(fileInputId);
+        const resultElement = document.getElementById(resultElementId);
+        const statusMessage = document.getElementById('statusMessage');
+
+        if (fileInput.files.length === 0) {
+            resultElement.textContent = "Please select a file.";
+            return;
+        }
+
+        statusMessage.textContent = `Calculating hash for ${fileInput.files[0].name}...`;
+        resultElement.textContent = "";
+
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        try {
+            const response = await fetch('/calculate_file_hash', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                resultElement.textContent = `Error: ${data.error}`;
+                statusMessage.textContent = "Hash calculation failed ❌";
+            } else {
+                resultElement.textContent = `SHA256 Hash: ${data.hash}`;
+                statusMessage.textContent = "Hash calculated successfully ✅";
+            }
+        } catch (error) {
+            resultElement.textContent = `An error occurred: ${error.message}`;
+            statusMessage.textContent = "Error communicating with server ❌";
+            console.error("Error calculating hash:", error);
+        }
+    }
+
+    function compareHashes() {
+        const hash1 = document.getElementById('hashResult1').textContent;
+        const hash2 = document.getElementById('hashResult2').textContent;
+        const comparisonResult = document.getElementById('comparisonResult');
+
+        // Extract just the hash value from the text content
+        const hashValue1 = hash1.includes("SHA256 Hash: ") ? hash1.split("SHA256 Hash: ")[1] : "";
+        const hashValue2 = hash2.includes("SHA256 Hash: ") ? hash2.split("SHA256 Hash: ")[1] : "";
+
+        if (!hashValue1 || !hashValue2) {
+            comparisonResult.textContent = "Please calculate hashes for both files first.";
+            comparisonResult.style.color = '#f44336';
+            return;
+        }
+
+        if (hashValue1 === hashValue2) {
+            comparisonResult.textContent = "Hashes Match! Files are identical. ✅";
+            comparisonResult.style.color = '#4CAF50';
+        } else {
+            comparisonResult.textContent = "Hashes DO NOT Match! Files are different or tampered with. ❌";
+            comparisonResult.style.color = '#f44336';
+        }
+        document.getElementById('statusMessage').textContent = ""; // Clear general status message
+    }
+</script>
+
+<style>
+    /* Add specific styles for the hashing tool page */
+    .result-display {
+        background-color: #e0e0e0;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+        font-family: 'Courier New', monospace; /* Monospace for hash display */
+        word-break: break-all; /* Break long hash strings */
+        font-size: 0.9em;
+        color: #333;
+    }
+
+    .form-group .button {
+        margin-top: 10px; /* Space between file input and its hash button */
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px; /* Space between buttons */
+        margin-top: 20px;
+    }
+
+    .status-message {
+        text-align: center;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}

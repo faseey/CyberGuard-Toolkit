@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="card">
+    <h2>Welcome to the CyberGuard Toolkit 🛡️</h2> {# UPDATED HERE #}
+    <p>This comprehensive toolkit offers various functionalities including file encryption/decryption, performance analysis, entropy analysis, file hashing, and password strength checking.</p>
+
+    <a class="button" href="{{ url_for('encrypt_page') }}">Encrypt</a>
+    <a class="button" href="{{ url_for('decrypt_page') }}">Decrypt</a>
+    <a class="button" href="{{ url_for('performance_page') }}">Check Performance</a>
+    <a class="button" href="{{ url_for('entropy_analyzer_page') }}">Entropy Analyzer</a>
+</div>
+{% endblock %}

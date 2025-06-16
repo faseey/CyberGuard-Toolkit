@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Encryption/Decryption Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h2>{{ operation }} using {{ method }}</h2>
+    <div class="info">
+        File: <strong>{{ filename }}</strong><br>
+        Time Taken: <strong>{{ elapsed }} ms</strong>
+    </div>
+    <div class="result-box">{{ result }}</div>
+    <div class="button-container">
+        <a href="/" class="back-btn">← Back to Home</a>
+        <a href="/download/{{ filename }}" class="download-btn">Download Result</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,348 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="card">
+    <h2>Entropy Analyzer</h2>
+
+    <div class="form-group">
+        <label for="rngType">Select RNG Type:</label>
+        <select id="rngType" class="input-field">
+            <option value="random">random (Python built-in)</option>
+            <option value="numpy">numpy.random</option>
+            <option value="secrets">secrets (Cryptographically Strong)</option>
+            </select>
+    </div>
+
+    <div class="form-group">
+        <label for="sampleSize">Sample Size:</label>
+        <input type="number" id="sampleSize" class="input-field" value="10000" min="100" max="1000000">
+    </div>
+
+    <div class="button-group">
+        <button class="button" onclick="analyzeEntropy()">Analyze Entropy</button>
+        <button class="button" onclick="compareRNGs()">Compare RNGs</button>
+        <button class="button" onclick="showBitLevelHeatmap()">Show Bit-Level Heatmap</button>
+    </div>
+
+    <p id="statusMessage" class="status-message"></p>
+
+    <div class="result-section" style="margin-top: 20px;">
+        <h3>Results</h3>
+        <p id="outputByteEntropy"></p>
+        <p id="outputBitEntropy"></p>
+        <p id="outputSecurityRating"></p>
+        <img id="heatmapImage" src="" alt="Bit-Level Heatmap" style="display: none; max-width: 100%; height: auto; margin-top: 20px;">
+    </div>
+
+    <div class="chart-container" style="margin-top: 30px;">
+        <canvas id="distributionChart"></canvas>
+    </div>
+    <div class="chart-container" style="margin-top: 30px;">
+        <canvas id="comparisonChart"></canvas>
+    </div>
+</div>
+
+<script>
+    let distributionChartInstance = null;
+    let comparisonChartInstance = null;
+
+    async function analyzeEntropy() {
+        const rngType = document.getElementById('rngType').value;
+        const sampleSize = document.getElementById('sampleSize').value;
+        const statusMessage = document.getElementById('statusMessage');
+        const outputByteEntropy = document.getElementById('outputByteEntropy');
+        const outputBitEntropy = document.getElementById('outputBitEntropy');
+        const outputSecurityRating = document.getElementById('outputSecurityRating');
+        const heatmapImage = document.getElementById('heatmapImage');
+
+        statusMessage.textContent = "Analyzing entropy...";
+        outputByteEntropy.textContent = "";
+        outputBitEntropy.textContent = "";
+        outputSecurityRating.textContent = "";
+        heatmapImage.style.display = 'none'; // Hide heatmap initially
+
+        // Destroy previous charts if they exist
+        if (distributionChartInstance) distributionChartInstance.destroy();
+        if (comparisonChartInstance) comparisonChartInstance.destroy();
+
+        try {
+            const formData = new FormData();
+            formData.append('rng_type', rngType);
+            formData.append('sample_size', sampleSize);
+
+            const response = await fetch('/analyze_entropy_json', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                statusMessage.textContent = `Error: ${data.error}`;
+                return;
+            }
+
+            outputByteEntropy.textContent = `Byte Entropy: ${data.byte_entropy} bits (Max: 8.0)`;
+            outputBitEntropy.textContent = `Bit Entropy: ${data.bit_entropy} bits (Max: 1.0)`;
+            outputSecurityRating.textContent = `Security Rating: ${data.security_rating}`;
+
+            // Render distribution chart
+            const ctx = document.getElementById('distributionChart').getContext('2d');
+            distributionChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.distribution_data.labels,
+                    datasets: [{
+                        label: 'Frequency',
+                        data: data.distribution_data.data,
+                        backgroundColor: 'rgba(66, 165, 245, 0.8)', // Corresponds to #42a5f5
+                        borderColor: 'rgba(66, 165, 245, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `${rngType.charAt(0).toUpperCase() + rngType.slice(1)} Output Distribution`
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Value (0-255)'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Frequency'
+                            }
+                        }
+                    }
+                }
+            });
+
+            statusMessage.textContent = "Analysis Complete ✅";
+
+        } catch (error) {
+            statusMessage.textContent = `Error during analysis: ${error.message}`;
+            console.error("Error analyzing entropy:", error);
+        }
+    }
+
+    async function compareRNGs() {
+        const sampleSize = document.getElementById('sampleSize').value;
+        const statusMessage = document.getElementById('statusMessage');
+        const outputByteEntropy = document.getElementById('outputByteEntropy');
+        const outputBitEntropy = document.getElementById('outputBitEntropy');
+        const outputSecurityRating = document.getElementById('outputSecurityRating');
+        const heatmapImage = document.getElementById('heatmapImage');
+
+        statusMessage.textContent = "Comparing RNGs...";
+        outputByteEntropy.textContent = "";
+        outputBitEntropy.textContent = "";
+        outputSecurityRating.textContent = "";
+        heatmapImage.style.display = 'none'; // Hide heatmap initially
+
+        // Destroy previous charts if they exist
+        if (distributionChartInstance) distributionChartInstance.destroy();
+        if (comparisonChartInstance) comparisonChartInstance.destroy();
+
+        try {
+            const formData = new FormData();
+            formData.append('sample_size', sampleSize);
+
+            const response = await fetch('/compare_rngs_json', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                statusMessage.textContent = `Error: ${data.error}`;
+                return;
+            }
+
+            // Render comparison chart
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            comparisonChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.comparison_data.labels,
+                    datasets: [{
+                        label: 'Byte Entropy',
+                        data: data.comparison_data.data,
+                        backgroundColor: ['rgba(102, 187, 106, 0.8)', 'rgba(239, 83, 80, 0.8)', 'rgba(66, 165, 245, 0.8)'], // Colors for random, numpy, secrets
+                        borderColor: ['rgba(102, 187, 106, 1)', 'rgba(239, 83, 80, 1)', 'rgba(66, 165, 245, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'RNG Entropy Comparison'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'RNG Type'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 8.0, // Max byte entropy is 8.0
+                            title: {
+                                display: true,
+                                text: 'Byte Entropy (bits)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            statusMessage.textContent = "Comparison Complete ✅";
+
+        } catch (error) {
+            statusMessage.textContent = `Error during comparison: ${error.message}`;
+            console.error("Error comparing RNGs:", error);
+        }
+    }
+
+    async function showBitLevelHeatmap() {
+        const rngType = document.getElementById('rngType').value;
+        const sampleSize = document.getElementById('sampleSize').value;
+        const statusMessage = document.getElementById('statusMessage');
+        const outputByteEntropy = document.getElementById('outputByteEntropy');
+        const outputBitEntropy = document.getElementById('outputBitEntropy');
+        const outputSecurityRating = document.getElementById('outputSecurityRating');
+        const heatmapImage = document.getElementById('heatmapImage');
+
+        statusMessage.textContent = "Generating heatmap...";
+        outputByteEntropy.textContent = "";
+        outputBitEntropy.textContent = "";
+        outputSecurityRating.textContent = "";
+        heatmapImage.style.display = 'none'; // Hide heatmap initially
+
+        // Destroy previous charts if they exist
+        if (distributionChartInstance) distributionChartInstance.destroy();
+        if (comparisonChartInstance) comparisonChartInstance.destroy();
+
+
+        try {
+            const formData = new FormData();
+            formData.append('rng_type', rngType);
+            formData.append('sample_size', sampleSize);
+
+            const response = await fetch('/generate_heatmap', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                statusMessage.textContent = `Error: ${data.error}`;
+                heatmapImage.style.display = 'none';
+                return;
+            }
+
+            if (data.heatmap_url) {
+                heatmapImage.src = data.heatmap_url;
+                heatmapImage.style.display = 'block'; // Show the image
+                statusMessage.textContent = "Heatmap Generated ✅";
+            } else {
+                statusMessage.textContent = "Heatmap URL not received.";
+            }
+
+        } catch (error) {
+            statusMessage.textContent = `Error generating heatmap: ${error.message}`;
+            console.error("Error generating heatmap:", error);
+        }
+    }
+</script>
+
+<style>
+    /* Basic styling for the new elements to match existing theme */
+    .card {
+        max-width: 900px; /* Adjust card width for more content */
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .input-field {
+        width: calc(100% - 22px); /* Adjust for padding and border */
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px; /* Space between buttons */
+        margin-top: 20px;
+    }
+
+    .button {
+        padding: 12px 25px;
+        background-color: #3949ab; /* Matches your defined style */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+        background-color: #2f3640; /* Darker hover effect */
+    }
+
+    .status-message {
+        text-align: center;
+        margin-top: 15px;
+        font-weight: bold;
+        color: #4CAF50; /* Green for success */
+    }
+
+    .result-section {
+        background: #f9f9f9;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+        text-align: center; /* Center result text */
+    }
+
+    .result-section h3 {
+        color: #2f3640;
+        margin-bottom: 10px;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 400px; /* Fixed height for charts */
+        width: 100%;
+        margin-top: 20px;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    #heatmapImage {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}

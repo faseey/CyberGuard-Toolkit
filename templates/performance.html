@@ -1,0 +1,92 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="card">
+    <h2>Performance Comparison</h2>
+    <form id="performanceForm" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required><br><br>
+        <label>Key (optional):</label>
+        <input type="text" name="key">
+        <label>Shift (for Caesar only):</label>
+        <input type="number" name="shift" value="3">
+        <input type="hidden" name="operation" value="encrypt">
+        <br><br>
+        <button class="button" type="submit">Check Performance</button>
+    </form>
+
+    <div class="result" id="chartContainer" style="margin-top: 30px;">
+        <h3>Performance (ms)</h3>
+        <ul id="resultList"></ul>
+        <canvas id="performanceChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.getElementById('performanceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    fetch('/performance_check_json', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            alert("Error: " + data.error);
+            return;
+        }
+
+        // Update list
+        const listEl = document.getElementById('resultList');
+        listEl.innerHTML = '';
+        for (const algo in data) {
+            const li = document.createElement('li');
+            li.innerHTML = `<b>${algo}</b>: ${data[algo]} ms`;
+            listEl.appendChild(li);
+        }
+
+        // Update chart
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        if (window.performanceChartInstance) {
+            window.performanceChartInstance.destroy();  // Destroy old chart
+        }
+
+        window.performanceChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(data),
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: Object.values(data),
+                    backgroundColor: [
+                        '#4dc9f6', '#f67019', '#f53794', '#537bc4', '#acc236'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Encryption Algorithm Performance'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

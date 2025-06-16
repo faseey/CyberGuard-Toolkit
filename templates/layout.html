@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CyberGuard Toolkit 🛡️</title> {# UPDATED HERE #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav>
+        <h1>CyberGuard Toolkit 🛡️</h1> {# UPDATED HERE #}
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="{{ url_for('encrypt_page') }}">Encrypt</a></li>
+            <li><a href="{{ url_for('decrypt_page') }}">Decrypt</a></li>
+            <li><a href="{{ url_for('performance_page') }}">Performance</a></li>
+            <li><a href="{{ url_for('entropy_analyzer_page') }}">Entropy Analyzer</a></li>
+            <li><a href="{{ url_for('hashing_tool_page') }}">Hashing Tool</a></li>
+            <li><a href="{{ url_for('password_strength_page') }}">Password Strength</a></li>
+        </ul>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>© 2025 CyberGuard Toolkit. All Rights Reserved.</p> {# OPTIONAL: You can update footer too #}
+    </footer>
+</body>
+</html>
