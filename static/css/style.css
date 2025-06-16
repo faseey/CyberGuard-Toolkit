@@ -1,0 +1,320 @@
+/* General Body and HTML Styling */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif; /* A more modern font */
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%); /* Elegant blue/purple gradient */
+    color: #333;
+    min-height: 100vh; /* Ensure body takes full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically centers content within the body */
+    align-items: center; /* Horizontally centers content within the body */
+}
+
+/* Navigation Bar */
+nav {
+    background: rgba(47, 54, 64, 0.95); /* Semi-transparent dark background */
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+    position: sticky; /* Make navigation sticky */
+    top: 0;
+    z-index: 1000; /* Ensure it stays on top */
+    width: 100%; /* Ensure nav spans full width */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+nav h1 {
+    margin: 0;
+    font-size: 1.8rem; /* Slightly larger heading */
+    letter-spacing: 1px;
+    color: #e0e0e0;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin-left: 30px; /* More space between links */
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500; /* Medium weight */
+    font-size: 1.1rem;
+    position: relative; /* For underline animation */
+    transition: color 0.3s ease;
+}
+
+nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: #1abc9c; /* Highlight color */
+    transition: width 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #1abc9c; /* Highlight color on hover */
+}
+
+nav ul li a:hover::after {
+    width: 100%; /* Expand underline on hover */
+}
+
+
+/* Main Content Area */
+main {
+    padding: 2rem;
+    flex-grow: 1; /* Allow main content to take available space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 50px; /* Push content down from sticky nav */
+    width: 100%; /* Ensure main spans full width */
+    box-sizing: border-box;
+}
+
+/* Card Styling */
+.card {
+    background: rgba(255, 255, 255, 0.95); /* Slightly transparent white card */
+    border-radius: 15px; /* More rounded corners */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); /* Deeper shadow */
+    padding: 2.5rem; /* More padding */
+    max-width: 800px; /* Slightly wider cards */
+    width: 90%; /* Responsive width */
+    margin: 20px auto; /* Centering with some margin */
+    animation: fadeIn 1s ease-out; /* Fade-in animation for cards */
+    box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Headings */
+h2 {
+    text-align: center;
+    color: #2f3640;
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 3px;
+    background-color: #1a73e8; /* Accent color */
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    border-radius: 2px;
+}
+
+h3 {
+    color: #2f3640;
+    font-size: 1.6rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Form Elements */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem; /* Space between form elements */
+}
+
+label {
+    margin-top: 0.5rem;
+    font-weight: 600; /* Semi-bold */
+    color: #555;
+    font-size: 1.05rem;
+}
+
+input[type="file"] {
+    padding: 8px 0;
+    border: 1px dashed #a8c0ff; /* Dashed border for file input */
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    text-align: center;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    padding: 12px 15px;
+    border: 1px solid #cceeff; /* Lighter blue border */
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: #1a73e8; /* Blue on focus */
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2); /* Glow effect */
+}
+
+/* Buttons (General) */
+.button, .back-btn, .download-btn {
+    padding: 14px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none; /* For anchor buttons */
+    color: white; /* Default text color for buttons */
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease; /* Smooth transitions */
+    outline: none;
+}
+
+/* Primary Form Button */
+.button {
+    background: linear-gradient(45deg, #1a73e8, #4dc9f6); /* Blue gradient */
+    box-shadow: 0 5px 15px rgba(26, 115, 232, 0.3);
+}
+
+.button:hover {
+    transform: translateY(-3px); /* Lift effect */
+    box-shadow: 0 8px 20px rgba(26, 115, 232, 0.4);
+    background: linear-gradient(45deg, #4dc9f6, #1a73e8); /* Invert gradient on hover */
+}
+
+/* Result Page Buttons */
+.button-container {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px; /* More space between buttons */
+    justify-content: center; /* Center buttons */
+}
+
+.back-btn {
+    background: linear-gradient(45deg, #6c757d, #adb5bd); /* Grey gradient */
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+}
+
+.back-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(108, 117, 125, 0.4);
+    background: linear-gradient(45deg, #adb5bd, #6c757d);
+}
+
+.download-btn {
+    background: linear-gradient(45deg, #28a745, #20c997); /* Green gradient */
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(45deg, #20c997, #28a745);
+}
+
+/* Result Box Specifics */
+.result-box {
+    padding: 25px; /* More padding */
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    margin-top: 25px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    width: 90%; /* Wider result box */
+    max-width: 750px; /* Increased max-width */
+    text-align: center; /* Centers the text inside the box */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Adjusted shadow */
+    font-size: 1.25rem; /* Larger font for result */
+    line-height: 1.6;
+    color: #444; /* Darker color for contrast on white background */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+.info {
+    margin-top: 15px;
+    font-size: 1.15rem; /* Larger info font */
+    color: #e0e0e0; /* Lighter color for info text on gradient background */
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* Headings on result page */
+body > h2 { /* Targeting the h2 directly under body on result.html */
+    color: white; /* White color for the heading on gradient background */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Subtle text shadow for better readability */
+    margin-bottom: 10px; /* Adjust margin */
+}
+
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: auto; /* Push footer to the bottom */
+    color: rgba(255, 255, 255, 0.8); /* Lighter text color */
+    font-size: 0.9rem;
+    background: rgba(47, 54, 64, 0.8); /* Match nav background */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ensure footer spans full width */
+    box-sizing: border-box;
+}
+
+/* Small adjustments for responsiveness */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 10px;
+    }
+    nav ul li {
+        margin: 5px 0;
+    }
+    main {
+        padding: 1rem;
+    }
+    .card {
+        padding: 1.5rem;
+    }
+    .button-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .result-box {
+        font-size: 1.1rem;
+    }
+}
+
+/* Poppins font import (add to layout.html or directly here if no other CSS is using it) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
