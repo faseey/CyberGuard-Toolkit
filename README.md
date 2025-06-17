@@ -302,9 +302,11 @@ CyberGuard-Toolkit/
 
 <div align="center">
 
-### ⭐ **Star this repository if you find it helpful!** ⭐
+### ⭐ **Like what you see? Star the repo! ** ⭐
 
-**Made with ❤️ by passionate developers**
+**Engineered with precision, fueled by passion ⚙️❤️
+
+**
 
 ---
 
