@@ -12,3 +12,4 @@ env/
 # macOS system files
 .DS_Store
 uploads/
+static/heatmaps

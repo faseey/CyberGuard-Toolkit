@@ -2,6 +2,8 @@ from flask import Flask, request, render_template, send_file, jsonify, make_resp
 from werkzeug.utils import secure_filename
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
+from Crypto.Cipher import DES
+from Crypto.Util.Padding import pad, unpad
 from cryptography.hazmat.primitives.asymmetric import rsa, padding as rsa_padding # CORRECTED LINE
 from cryptography.hazmat.primitives import serialization, hashes, padding as sym_padding
 import os, io, time
@@ -9,10 +11,16 @@ import hashlib
 import re
 
 # Import the new entropy_utils module
-import entropy_utils
+import matplotlib
+matplotlib.use('Agg')  # 👈 Non-GUI backend
 import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
+
+import entropy_utils #entropy/randomness
+
+import matplotlib.pyplot as plt #for basic plotting
+import seaborn as sns  #for stylish_plots
+import numpy as np #NumericCalculatons
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -56,8 +64,18 @@ def aes_decrypt(text_hex, key):
     return text.decode('utf-8', errors='ignore') # Decode, ignoring errors
 
 def rsa_encrypt(text, public_key):
+    if isinstance(text, bytes):
+        encoded = text
+    elif isinstance(text, str):
+        encoded = text.encode('utf-8')
+    else:
+        raise ValueError("Unsupported input type for RSA encryption")
+
+    if len(encoded) > 190:
+        raise ValueError("RSA can only encrypt up to ~190 bytes")
+
     ciphertext = public_key.encrypt(
-        text.encode('utf-8'),
+        encoded,
         rsa_padding.OAEP(
             mgf=rsa_padding.MGF1(algorithm=hashes.SHA256()),
             algorithm=hashes.SHA256(),
@@ -65,6 +83,7 @@ def rsa_encrypt(text, public_key):
         )
     )
     return ciphertext.hex()
+
 
 def rsa_decrypt(text_hex, private_key):
     plaintext = private_key.decrypt(
@@ -118,26 +137,21 @@ def vigenere_decrypt(text, key):
     return "".join(decrypted_text)
 
 def des_encrypt(text, key):
-    # DES key must be 8 bytes
-    key = key.encode()[:8].ljust(8, b'\0')
-    # Pad text to be a multiple of DES block size (8 bytes)
-    padder = sym_padding.PKCS7(algorithms.DES.block_size).padder()
-    padded_text = padder.update(text.encode()) + padder.finalize()
+    key = key.encode()[:8].ljust(8, b'\0')  # Make key exactly 8 bytes
+    cipher = DES.new(key, DES.MODE_ECB)    # Create DES cipher in ECB mode
+    padded_text = pad(text.encode(), DES.block_size)  # Pad text to 8 bytes
+    ct_bytes = cipher.encrypt(padded_text)
+    return ct_bytes.hex()  # Return ciphertext in hex
 
-    cipher = Cipher(algorithms.DES(key), modes.ECB(), backend=default_backend()) # ECB mode for simplicity
-    encryptor = cipher.encryptor()
-    ct = encryptor.update(padded_text) + encryptor.finalize()
-    return ct.hex()
 
 def des_decrypt(text_hex, key):
-    key = key.encode()[:8].ljust(8, b'\0')
-    ct = bytes.fromhex(text_hex)
-    cipher = Cipher(algorithms.DES(key), modes.ECB(), backend=default_backend())
-    decryptor = cipher.decryptor()
-    padded_text = decryptor.update(ct) + decryptor.finalize()
-    unpadder = sym_padding.PKCS7(algorithms.DES.block_size).unpadder()
-    text = unpadder.update(padded_text) + unpadder.finalize()
-    return text.decode('utf-8', errors='ignore')
+    key = key.encode()[:8].ljust(8, b'\0')  # Make key exactly 8 bytes
+    cipher = DES.new(key, DES.MODE_ECB)    # Same cipher for decryption
+    ct = bytes.fromhex(text_hex)           # Convert hex back to bytes
+    decrypted_padded = cipher.decrypt(ct)
+    decrypted = unpad(decrypted_padded, DES.block_size)  # Remove padding
+    return decrypted.decode('utf-8', errors='ignore')     # Return string
+
 
 
 # Mapping of methods to their encryption/decryption functions
@@ -232,10 +246,10 @@ def process():
         result_path = os.path.join(app.config['UPLOAD_FOLDER'], result_filename)
         if isinstance(result_content, str):
             with open(result_path, 'w', encoding='utf-8') as f:
-                f.write(result_content)
+                f.write(result_content) #if string
         elif isinstance(result_content, bytes):
             with open(result_path, 'wb') as f: # Write as binary if bytes
-                f.write(result_content)
+                f.write(result_content) #if bytes
 
 
         return render_template('result.html',
@@ -350,27 +364,30 @@ def generate_heatmap():
         sample_size = int(request.form['sample_size'])
 
         data = entropy_utils.generate_samples(generator_type, sample_size)
-        # For heatmap, we often take a smaller slice for visualization if sample_size is very large
-        # Let's limit to first 1000 bytes for practical visualization
         display_data = data[:min(sample_size, 1000)]
         bits = np.array([[int(b) for b in f"{byte:08b}"] for byte in display_data])
 
-        plt.figure(figsize=(12, max(3, len(display_data) // 100))) # Adjust figure size dynamically
-        sns.heatmap(bits.T, cmap="viridis", cbar=False, yticklabels=[str(i) for i in range(8)]) # Use viridis for better contrast, yticklabels for bits
+        plt.figure(figsize=(12, max(3, len(display_data) // 100)))
+        sns.heatmap(bits.T, cmap="viridis", cbar=False, yticklabels=[str(i) for i in range(8)])
         plt.title(f"Bit-Level Entropy Heatmap for {generator_type.capitalize()} (First {len(display_data)} Bytes)")
         plt.xlabel("Byte Index")
         plt.ylabel("Bit Position")
         plt.tight_layout()
 
-        # Save plot to a temporary file
         heatmap_filename = f"{generator_type}_heatmap_{int(time.time())}.png"
         heatmap_filepath = os.path.join(app.config['HEATMAP_FOLDER'], heatmap_filename)
         plt.savefig(heatmap_filepath)
-        plt.close() # Close the plot to free memory
+        plt.close()
 
-        return jsonify({"heatmap_url": url_for('static', filename=f'heatmaps/{heatmap_filename}')})
+        return jsonify({
+            "heatmap_url": url_for('static', filename=f'heatmaps/{heatmap_filename}')
+        })
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        # ❌ Don't reference heatmap_filepath if error occurred before defining it
+        return jsonify({
+            "error": str(e)
+        }), 400
 
 @app.route('/calculate_file_hash', methods=['POST'])
 def calculate_file_hash():
@@ -389,6 +406,7 @@ def calculate_file_hash():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 @app.route('/check_password_strength_json', methods=['POST'])
 def check_password_strength_json():
@@ -453,5 +471,5 @@ def check_password_strength_json():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    
+    app.run(debug=False)
+
