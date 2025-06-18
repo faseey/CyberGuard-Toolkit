@@ -304,7 +304,6 @@ CyberGuard-Toolkit/
 
 ### **Star this repository if you find it helpful!**
 
-**Engineered with precision, fueled by passion**
 
 ---
 
