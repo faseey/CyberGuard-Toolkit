@@ -1,4 +1,4 @@
-# 🛡️ CyberGuard Toolkit
+# CyberGuard Toolkit
 
 > **A comprehensive web-based application offering a suite of cybersecurity tools for file encryption/decryption, entropy analysis, hashing, and password strength checking.**
 
@@ -6,7 +6,7 @@
 
 ---
 
-## 🌟 **Why This Toolkit?**
+## Why This Toolkit?
 
 * **Robust Data Protection**: Implement strong encryption algorithms to safeguard your sensitive information from unauthorized access.
 
@@ -20,9 +20,9 @@
 
 ---
 
-## 📸 **Screenshots**
+## Screenshots
 
-### 🏠 Home Dashboard
+### Home Dashboard
 
 *Add your main home page screenshot here, showcasing the available tools.*
 
@@ -30,7 +30,7 @@
 ![Home Dashboard](screenshots/home_dashboard.png)
 ```
 
-### 🔐 Encryption/Decryption Interface
+### Encryption/Decryption Interface
 
 *Add a screenshot of the encryption or decryption page.*
 
@@ -38,7 +38,7 @@
 ![Encryption/Decryption](screenshots/encrypt_decrypt.png)
 ```
 
-### 📊 Entropy Analyzer
+### Entropy Analyzer
 
 *Add screenshots of the entropy analysis results, charts, or heatmap.*
 
@@ -47,7 +47,7 @@
 ![Entropy Chart](screenshots/entropy_chart.png)
 ```
 
-### 🔍 File Hashing Tool
+### File Hashing Tool
 
 *Add a screenshot of the hashing tool showing a calculated hash or comparison.*
 
@@ -55,7 +55,7 @@
 ![File Hashing](screenshots/hashing_tool.png)
 ```
 
-### 💪 Password Strength Checker
+### Password Strength Checker
 
 *Add a screenshot of the password strength checker in action.*
 
@@ -65,9 +65,9 @@
 
 ---
 
-## 🎯 **Core Features**
+## Core Features
 
-### 🔐 **File Encryption & Decryption**
+### File Encryption & Decryption
 
 * **Caesar Cipher**: Basic character shifting for simple encryption.
 
@@ -79,13 +79,13 @@
 
 * **DES (Data Encryption Standard)**: An older symmetric-key algorithm, included for historical and comparative purposes.
 
-### 📈 **Algorithm Performance Analysis**
+### Algorithm Performance Analysis
 
 * Compare the execution time of different encryption/decryption algorithms (Caesar, AES, RSA, Vigenère, DES) on uploaded files.
 
 * Visual representation of performance metrics using charts (powered by Chart.js).
 
-### 🔬 **Entropy Analyzer**
+### Entropy Analyzer
 
 * **Shannon Entropy Calculation**: Measures the average uncertainty, or "randomness," of a byte sequence.
 
@@ -95,13 +95,13 @@
 
 * **Bit-Level Heatmaps**: Visualize the distribution and patterns of bits within generated data to intuitively understand randomness.
 
-### ✅ **File Hashing Tool**
+### File Hashing Tool
 
 * **SHA256 Hash Generation**: Compute a secure SHA256 hash for any uploaded file.
 
 * **File Integrity Verification**: Easily compare the hashes of two files to determine if they are identical or have been tampered with.
 
-### 💪 **Password Strength Checker**
+### Password Strength Checker
 
 * Evaluate the strength of a given password against common security criteria:
 
@@ -119,9 +119,9 @@
 
 ---
 
-## 🏗️ **Technical Architecture**
+## Technical Architecture
 
-### 🐍 **Backend Powerhouse**
+### Backend Powerhouse
 
 ```
 Flask Application (Python)
@@ -133,7 +133,7 @@ Flask Application (Python)
 └── Dynamic Heatmap Generation (Matplotlib/Seaborn)
 ```
 
-### 🌐 **Frontend Excellence**
+### Frontend Excellence
 
 ```
 Web Browser Interface (HTML, CSS, JavaScript)
@@ -145,24 +145,24 @@ Web Browser Interface (HTML, CSS, JavaScript)
 
 ---
 
-## 🚀 **Quick Start Guide**
+## Quick Start Guide
 
-### 📋 **Prerequisites**
+### Prerequisites
 
-* ☕ **Python 3.x**
+* Python 3.x
 
-* 📦 **pip** (Python package installer)
+* pip (Python package installer)
 
-### ⚡ **Installation**
+### Installation
 
-1.  **📥 Clone the Repository**
+1.  **Clone the Repository**
 
     ```bash
     git clone [https://github.com/faseey/CyberGuard-Toolkit.git](https://github.com/faseey/CyberGuard-Toolkit.git)
     cd CyberGuard-Toolkit
     ```
 
-2.  **⚙️ Install Dependencies**
+2.  **Install Dependencies**
     It's highly recommended to use a virtual environment:
 
     ```bash
@@ -176,7 +176,7 @@ Web Browser Interface (HTML, CSS, JavaScript)
     pip install Flask cryptography pycryptodome matplotlib seaborn numpy
     ```
 
-3.  **🔨 Run the Application**
+3.  **Run the Application**
     You can start the Flask development server using either command:
 
     ```bash
@@ -189,7 +189,7 @@ Web Browser Interface (HTML, CSS, JavaScript)
 
     The necessary `uploads/` and `static/heatmaps/` directories will be created automatically upon application startup to store temporary files and generated images.
 
-## 🎮 **How to Use**
+## How to Use
 
 The CyberGuard Toolkit is designed for intuitive use.
 
@@ -213,19 +213,19 @@ The CyberGuard Toolkit is designed for intuitive use.
 
 4.  **Explore Other Features**: Each section of the toolkit is designed for simplicity. Follow the on-screen prompts for performing entropy analysis, calculating file hashes, comparing file integrity, or checking password strength.
 
-## 🎨 **Design Considerations**
+## Design Considerations
 
 The CyberGuard Toolkit features a clean, responsive, and modern user interface, designed for clarity and ease of use. It utilizes custom CSS to provide a consistent and visually appealing experience across different tools.
 
-## 🤝 **Contributing**
+## Contributing
 
 We welcome contributions from the community! If you'd like to help improve the CyberGuard Toolkit, please follow these guidelines:
 
-### 🔄 **Development Workflow**
+### Development Workflow
 
-1.  **🍴 Fork** the repository on GitHub.
+1.  **Fork** the repository on GitHub.
 
-2.  **🌿 Create** a new branch for your feature or bug fix:
+2.  **Create** a new branch for your feature or bug fix:
 
     ```bash
     git checkout -b feature/your-awesome-feature
@@ -233,11 +233,11 @@ We welcome contributions from the community! If you'd like to help improve the C
     git checkout -b bugfix/resolve-issue-xyz
     ```
 
-3.  **💻 Code** your improvements and additions.
+3.  **Code** your improvements and additions.
 
-4.  **✅ Test** your changes thoroughly to ensure functionality and prevent regressions.
+4.  **Test** your changes thoroughly to ensure functionality and prevent regressions.
 
-5.  **📝 Commit** your changes with clear, descriptive messages:
+5.  **Commit** your changes with clear, descriptive messages:
 
     ```bash
     git commit -m "feat: Add new awesome feature"
@@ -245,15 +245,15 @@ We welcome contributions from the community! If you'd like to help improve the C
     git commit -m "fix: Resolve issue with encryption"
     ```
 
-6.  **🚀 Push** your local branch to your forked repository:
+6.  **Push** your local branch to your forked repository:
 
     ```bash
     git push origin feature/your-awesome-feature
     ```
 
-7.  **📋 Submit** a Pull Request (PR) to the `main` branch of this repository. Please describe your changes in detail in the PR description.
+7.  **Submit** a Pull Request (PR) to the `main` branch of this repository. Please describe your changes in detail in the PR description.
 
-### 📁 **Project Structure**
+### Project Structure
 
 ```
 CyberGuard-Toolkit/
@@ -278,9 +278,9 @@ CyberGuard-Toolkit/
 │   └── result.html             # Page to display encryption/decryption results
 ```
 
-## 📞 **Support & Contact**
+## Support & Contact
 
-### 🆘 **Need Help?**
+### Need Help?
 
 * **Email**: www.fasiih@gmail.com
 
@@ -288,7 +288,7 @@ CyberGuard-Toolkit/
 
 * **Feature Requests**: [Start a Discussion](https://github.com/faseey/CyberGuard-Toolkit/discussions) (Please replace `faseey` with your actual GitHub username if different)
 
-## 🙏 **Acknowledgments**
+## Acknowledgments
 
 * **Flask**: For providing a lightweight and powerful web framework.
 
@@ -302,14 +302,12 @@ CyberGuard-Toolkit/
 
 <div align="center">
 
-### ⭐ **Like what you see? Star the repo! ** ⭐
+### **Star this repository if you find it helpful!**
 
-**Engineered with precision, fueled by passion ⚙️❤️
-
-**
+**Engineered with precision, fueled by passion**
 
 ---
 
-*Secure your digital world, one file at a time!* 🚀
+*Secure your digital world, one file at a time!*
 
 </div>
